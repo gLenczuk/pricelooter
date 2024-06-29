@@ -1,5 +1,5 @@
 {
-    "name": "@mazuma/client",
+    "name": "@pricelooter/client",
     "version": "1.0.0",
     "private": true,
     "scripts": {
@@ -9,8 +9,8 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@mazuma/types": "workspace:*",
-        "@mazuma/exceptions": "workspace:*",
-        "@mazuma/validator": "workspace:*"
+        "@pricelooter/types": "workspace:*",
+        "@pricelooter/exceptions": "workspace:*",
+        "@pricelooter/validator": "workspace:*"
     }
 }
