@@ -1,0 +1,2 @@
+CREATE DATABASE pricelooter_dev_db;
+CREATE DATABASE pricelooter_test_db;

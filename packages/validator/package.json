@@ -1,0 +1,16 @@
+{
+    "name": "@pricelooter/validator",
+    "version": "1.0.0",
+    "private": "true",
+    "typings": "./.build/index.d.ts",
+    "main": "./.build/index.js",
+    "scripts": {
+        "dev": "tsc -w --preserveWatchOutput",
+        "lint": "eslint **/*.{js,ts} --fix --ignore-path ../../.eslintignore",
+        "build": "rimraf build && tsc"
+    },
+    "dependencies": {
+        "@pricelooter/types": "workspace:*",
+        "@pricelooter/exceptions": "workspace:*"
+    }
+}

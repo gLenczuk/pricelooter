@@ -1,0 +1,6 @@
+.build
+jest.config.ts
+jest.setup.ts
+coverage
+prisma
+next.config.js
