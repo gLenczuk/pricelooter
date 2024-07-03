@@ -1,3 +1,5 @@
+import { ProductDTO } from './product';
+
 export enum UserStatus {
     Active = 'ACTIVE',
     Inactive = 'INACTIVE',
@@ -14,6 +16,7 @@ export interface UserDTO {
     email: string;
     password: string;
     status: UserStatus;
+    products: ProductDTO[];
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date | null;

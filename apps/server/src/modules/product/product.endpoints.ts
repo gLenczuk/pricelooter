@@ -1,0 +1,64 @@
+import express, { Response as ExpressResponse, Request as ExpressRequest } from 'express';
+import { getApplicationConfig } from '../../config';
+import { withSchemaValidation } from '../../middlewares/withSchemaValidation';
+import { ExtendedExpressSession, TypedExpressRequest } from '../../types';
+import withAsyncHandler from 'express-async-handler';
+import { CreateProductSchema } from '@pricelooter/validator';
+import { CreateProductRequest, GetProductsResponse } from '@pricelooter/types';
+import { withSessionAuthentication } from '../../middlewares/withSessionAuthentication';
+import { productController } from './product.controller';
+import { CreateProductResponse } from '@pricelooter/types';
+import { getRequestLanguage } from '../../utils/getRequestLanguage';
+import { SyncEventEmitter } from '../../libs/sync-event-emitter';
+
+export const productRouter = express.Router();
+
+export const CREATE_PRODUCT_ENDPOINT = '/api/v1/products';
+export const GET_PRODUCTS_ENDPOINT = '/api/v1/products';
+
+productRouter.post(
+    CREATE_PRODUCT_ENDPOINT,
+    withSchemaValidation(CreateProductSchema),
+    withSessionAuthentication,
+    withAsyncHandler(
+        async (req: TypedExpressRequest<CreateProductRequest>, res: ExpressResponse<CreateProductResponse>) => {
+            const language = getRequestLanguage(req.headers['accept-language']);
+
+            const product = await productController.createProduct({
+                body: req.body,
+                session: req.session as ExtendedExpressSession,
+                config: getApplicationConfig(),
+                language,
+            });
+
+            SyncEventEmitter.emit('ON_PRODUCT_CREATED', { product, language });
+
+            res.status(201).json({
+                body: { product },
+                key: 'product_created',
+                meta: {},
+            });
+        },
+    ),
+);
+
+productRouter.get(
+    GET_PRODUCTS_ENDPOINT,
+    withSessionAuthentication,
+    withAsyncHandler(async (req: ExpressRequest, res: ExpressResponse<GetProductsResponse>) => {
+        const language = getRequestLanguage(req.headers['accept-language']);
+
+        const products = await productController.getProducts({
+            body: {},
+            session: req.session as ExtendedExpressSession,
+            config: getApplicationConfig(),
+            language,
+        });
+
+        res.status(200).json({
+            body: { products },
+            key: 'products_found',
+            meta: {},
+        });
+    }),
+);

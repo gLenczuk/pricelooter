@@ -15,3 +15,5 @@ export * from './domain/user';
 export * from './domain/session';
 export * from './domain/token';
 export * from './domain/notification';
+export * from './domain/platform';
+export * from './domain/product';

@@ -13,6 +13,7 @@
         "@pricelooter/logger": "workspace:*",
         "@pricelooter/exceptions": "workspace:*",
         "@pricelooter/validator": "workspace:*",
-        "@pricelooter/mailer": "workspace:*"
+        "@pricelooter/mailer": "workspace:*",
+        "@pricelooter/scraper": "workspace:*"
     }
 }
