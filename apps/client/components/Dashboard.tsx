@@ -37,11 +37,11 @@ import {
 } from 'components/core/Select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/core/Table';
 import { useToast } from 'hooks/useToast';
-import { AlertCircle, GamepadIcon, LoaderIcon, PlusIcon, ShirtIcon, SquareMousePointer, TrashIcon } from 'lucide-react';
+import { AlertCircle, GamepadIcon, LoaderIcon, PlusIcon, SquareMousePointer, TrashIcon } from 'lucide-react';
 import { useCreateProductMutation } from 'mutations/createProductMutation';
 import { useUserProductsQuery } from 'queries/getUserProductsQuery';
 import { FormEvent, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { format } from 'date-fns';
 import { usePlatformsQuery } from 'queries/getPlatformsQuery';
 
@@ -51,6 +51,7 @@ export const Dashboard = () => {
     const { createProduct, isCreatingProduct, createProductError } = useCreateProductMutation({
         onSuccess: () => {
             openDialog(false);
+            resetFormData();
             toast({
                 description: 'Product was added successfuly.',
                 duration: 5000,
@@ -60,13 +61,15 @@ export const Dashboard = () => {
 
     const { products, isLoadingProducts } = useUserProductsQuery();
     const { platforms } = usePlatformsQuery();
+    const categories = [{ name: 'Gaming', icon: <GamepadIcon className="mr-2" /> }];
 
     const {
         register,
         formState: { errors: formErrors },
         trigger: validateForm,
         getValues: getFormData,
-        setValue: setFormData,
+        reset: resetFormData,
+        control,
     } = useForm({
         resolver: yupResolver(CreateProductSchema),
         mode: 'onBlur',
@@ -74,8 +77,6 @@ export const Dashboard = () => {
 
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        setFormData('platformId', 2);
 
         const isFormValid = await validateForm();
         if (!isFormValid) return;
@@ -97,7 +98,13 @@ export const Dashboard = () => {
                             <CardTitle className="text-2xl">Products</CardTitle>
                             <CardDescription>Active tracked products added by you.</CardDescription>
                         </div>
-                        <Dialog open={isDialogOpened} onOpenChange={isOpened => openDialog(isOpened)}>
+                        <Dialog
+                            open={isDialogOpened}
+                            onOpenChange={isOpened => {
+                                openDialog(isOpened);
+                                resetFormData();
+                            }}
+                        >
                             <DialogTrigger asChild>
                                 <Button size="sm">
                                     <PlusIcon />
@@ -117,46 +124,49 @@ export const Dashboard = () => {
                                         </div>
                                         <div className="grid gap-2">
                                             <Label>Platform</Label>
-                                            <Select>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select a platform" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel className="flex items-center">
-                                                            <GamepadIcon className="mr-2"></GamepadIcon>
-                                                            Gaming
-                                                        </SelectLabel>
-                                                        <SelectItem value="1" className="pl-12">
-                                                            Unity Asset Store
-                                                        </SelectItem>
-                                                        <SelectItem value="2" className="pl-12">
-                                                            Steam
-                                                        </SelectItem>
-                                                    </SelectGroup>
-                                                    <SelectGroup>
-                                                        <SelectLabel className="flex items-center">
-                                                            <ShirtIcon size={22} className="mr-2"></ShirtIcon>
-                                                            Fashion
-                                                        </SelectLabel>
-                                                        <SelectItem value="3" className="pl-12">
-                                                            Zalando
-                                                        </SelectItem>
-                                                        <SelectItem value="4" className="pl-12">
-                                                            CCC
-                                                        </SelectItem>
-                                                        <SelectItem value="5" className="pl-12">
-                                                            Sizeer
-                                                        </SelectItem>
-                                                    </SelectGroup>
-                                                    <SelectGroup>
-                                                        <SelectLabel className="flex items-center">Others</SelectLabel>
-                                                        <SelectItem value="6" className="pl-12">
-                                                            Amazon
-                                                        </SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
+                                            <Controller
+                                                control={control}
+                                                name="platformId"
+                                                render={({ field: { onChange, value } }) => (
+                                                    <Select
+                                                        onValueChange={value => onChange(Number(value))}
+                                                        value={value?.toString()}
+                                                    >
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a platform" />
+                                                        </SelectTrigger>
+                                                        {formErrors.platformId && (
+                                                            <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-red-600 ml-auto">
+                                                                {formErrors.platformId.message}
+                                                            </span>
+                                                        )}
+                                                        <SelectContent>
+                                                            {categories.map(category => {
+                                                                const platformsForCategory = platforms.filter(
+                                                                    platform => platform.category === category.name,
+                                                                );
+
+                                                                return (
+                                                                    <SelectGroup key={category.name}>
+                                                                        <SelectLabel className="flex items-center pl-4">
+                                                                            {category.icon} {category.name}
+                                                                        </SelectLabel>
+                                                                        {platformsForCategory.map(platform => (
+                                                                            <SelectItem
+                                                                                key={platform.id}
+                                                                                value={platform.id.toString()}
+                                                                                className="pl-8"
+                                                                            >
+                                                                                {platform.name}
+                                                                            </SelectItem>
+                                                                        ))}
+                                                                    </SelectGroup>
+                                                                );
+                                                            })}
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            />
                                         </div>
                                     </div>
                                     {isCreatingProduct && (

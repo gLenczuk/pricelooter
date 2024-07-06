@@ -8,6 +8,7 @@ const mapDatabasePlatformToPlatformDTO = (databasePlatform: DatabasePlatform): P
     id: databasePlatform.id,
     name: databasePlatform.name,
     url: databasePlatform.url,
+    category: databasePlatform.category,
     products: databasePlatform.products
         ? databasePlatform.products.map(productMapper.mapDatabaseProductToProductDTO)
         : [],

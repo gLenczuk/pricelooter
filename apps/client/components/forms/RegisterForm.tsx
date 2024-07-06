@@ -11,9 +11,15 @@ import { FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CreateUserSchema } from '@pricelooter/validator';
+import { useRouter } from 'next/navigation';
 
 export const RegisterForm = () => {
-    const { createUser, isCreatingUser, createUserError } = useCreateUserMutation();
+    const router = useRouter();
+    const { createUser, isCreatingUser, createUserError } = useCreateUserMutation({
+        onSuccess: () => {
+            router.push('/');
+        },
+    });
 
     const {
         register,

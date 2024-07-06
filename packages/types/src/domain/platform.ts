@@ -4,6 +4,7 @@ export interface PlatformDTO {
     id: number;
     name: string;
     url: string;
+    category: string;
     products: ProductDTO[];
     createdAt: Date;
     updatedAt: Date;

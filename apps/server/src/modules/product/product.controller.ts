@@ -22,7 +22,7 @@ const createProduct = async (req: ControllerRequest<CreateProductRequest>) => {
 
     const platform = await platformService.findUniquePlatform({ id: platformId });
 
-    if (!platform) throw new NotFoundError({ message: `Cannot find platform for given ID (${platformId}).` });
+    if (!platform) throw new NotFoundError({ message: `Cannot find specified platform.` });
 
     return productService.createProduct({
         platformId: platform.id,
