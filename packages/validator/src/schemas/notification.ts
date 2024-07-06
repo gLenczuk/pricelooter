@@ -1,14 +1,13 @@
 import { object, string } from 'yup';
-import { VALIDATION_KEYS } from '../keys';
 import { SendNotificationType } from '@pricelooter/types';
 
 const SendNotificationTypeSchema = string()
-    .required(VALIDATION_KEYS.SCHEMA_REQUIRED_KEY)
-    .oneOf([SendNotificationType.ForgotPasswordEmail], VALIDATION_KEYS.SCHEMA_INVALID_ENUM);
+    .required('Notification type is required.')
+    .oneOf([SendNotificationType.ForgotPasswordEmail], 'Invalid notification type.');
 
 export const SendForgotPasswordEmailSchema = object({
     type: SendNotificationTypeSchema,
     data: object({
-        email: string().required(VALIDATION_KEYS.SCHEMA_REQUIRED_KEY).email(VALIDATION_KEYS.SCHEMA_INVALID_FORMAT),
-    }).required(VALIDATION_KEYS.SCHEMA_REQUIRED_KEY),
+        email: string().required('Email is required.').email('Invalid email format.'),
+    }).required('Only keys specified in schema are allowed.'),
 });

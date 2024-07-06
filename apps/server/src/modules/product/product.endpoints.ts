@@ -14,7 +14,7 @@ import { SyncEventEmitter } from '../../libs/sync-event-emitter';
 export const productRouter = express.Router();
 
 export const CREATE_PRODUCT_ENDPOINT = '/api/v1/products';
-export const GET_PRODUCTS_ENDPOINT = '/api/v1/products';
+export const GET_PRODUCTS_ENDPOINT = '/api/v1/products/me';
 
 productRouter.post(
     CREATE_PRODUCT_ENDPOINT,

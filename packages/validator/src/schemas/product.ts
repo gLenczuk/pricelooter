@@ -1,9 +1,8 @@
 import { object, string, number } from 'yup';
-import { VALIDATION_KEYS } from '../keys';
 
 export const CreateProductSchema = object({
-    platformId: number().required(VALIDATION_KEYS.SCHEMA_REQUIRED_KEY),
-    url: string().required(VALIDATION_KEYS.SCHEMA_REQUIRED_KEY).url(VALIDATION_KEYS.SCHEMA_INVALID_URL),
+    platformId: number().required('Platform ID is required.'),
+    url: string().required('Product URL is required.').url('Invalid product URL.'),
 })
-    .noUnknown(true, VALIDATION_KEYS.SCHEMA_ONLY_ALLOWED_KEYS)
+    .noUnknown(true, 'Only keys specified in schema are allowed.')
     .strict(true);

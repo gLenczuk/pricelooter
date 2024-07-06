@@ -29,13 +29,23 @@ interface UpdateOneUserDTO {
     data: UpdateOneUserDataDTO;
 }
 
+interface FindManyUsersFilterDTO {
+    ids?: number[];
+}
+
+interface FindManyUsersDTO {
+    filter?: FindManyUsersFilterDTO;
+}
+
 export type CreateDatabaseUserQuery = CreateUserDTO;
 export type FindUniqueDatabaseUserQuery = FindOneUserDTO;
 export type UpdateOneDatabaseUserQuery = UpdateOneUserDTO;
+export type FindManyDatabaseUsersQuery = FindManyUsersDTO;
 
 export type CreateUserParams = CreateUserDTO;
 export type FindUniqueUserParams = FindOneUserDTO;
 export type UpdateUniqueUserParams = UpdateOneUserDTO;
+export type FindManyUsersParams = FindManyUsersDTO;
 
 export type UserUpdateSchemas = Record<UserUpdateOperation, Schema>;
 

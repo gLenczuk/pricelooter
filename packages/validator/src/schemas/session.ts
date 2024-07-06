@@ -1,13 +1,12 @@
 import * as yup from 'yup';
-import { VALIDATION_KEYS } from '../keys';
 
 export const AuthenticateUserSchema = yup
     .object({
-        email: yup.string().required(VALIDATION_KEYS.SCHEMA_REQUIRED_KEY).email(VALIDATION_KEYS.SCHEMA_INVALID_FORMAT),
+        email: yup.string().required('Email is required.').email('Email has invalid format.'),
         password: yup
             .string()
-            .required(VALIDATION_KEYS.SCHEMA_REQUIRED_KEY)
-            .min(8, VALIDATION_KEYS.SCHEMA_MINIMUM_LENGTH),
+            .required('Password is required.')
+            .min(8, 'Password should contain at least 8 characters.'),
     })
-    .noUnknown(true, VALIDATION_KEYS.SCHEMA_ONLY_ALLOWED_KEYS)
+    .noUnknown(true, 'Only keys specified in schema are allowed.')
     .strict(true);

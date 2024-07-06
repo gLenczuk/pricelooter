@@ -4,6 +4,7 @@ import {
     ActivateUserParams,
     ChangeUserPasswordParams,
     CreateUserParams,
+    FindManyUsersParams,
     FindUniqueUserParams,
     UpdateUniqueUserParams,
 } from './user.types';
@@ -33,6 +34,14 @@ const findUniqueUser = (params: FindUniqueUserParams) => {
     return userRepository.findUnique({
         id: params.id,
         email: params.email,
+    });
+};
+
+const findManyUsers = (params: FindManyUsersParams) => {
+    return userRepository.findMany({
+        filter: {
+            ids: params.filter?.ids,
+        },
     });
 };
 
@@ -107,4 +116,5 @@ export const userService = {
     updateUniqueUser,
     activateUser,
     changeUserPassword,
+    findManyUsers,
 };

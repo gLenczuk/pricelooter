@@ -1,7 +1,12 @@
 import { UserStatus } from '@pricelooter/types';
 import { prisma } from '../../libs/database';
 import { userMapper } from './user.mapper';
-import { CreateDatabaseUserQuery, FindUniqueDatabaseUserQuery, UpdateOneDatabaseUserQuery } from './user.types';
+import {
+    CreateDatabaseUserQuery,
+    FindManyDatabaseUsersQuery,
+    FindUniqueDatabaseUserQuery,
+    UpdateOneDatabaseUserQuery,
+} from './user.types';
 import { getApplicationConfig } from '../../config';
 
 const create = async (query: CreateDatabaseUserQuery) => {
@@ -41,8 +46,21 @@ const updateOne = async (query: UpdateOneDatabaseUserQuery) => {
     return userMapper.mapDatabaseUserToUserDTO(user);
 };
 
+const findMany = async (query: FindManyDatabaseUsersQuery) => {
+    const users = await prisma.user.findMany({
+        where: {
+            id: {
+                in: query.filter?.ids,
+            },
+        },
+    });
+
+    return users.map(userMapper.mapDatabaseUserToUserDTO);
+};
+
 export const userRepository = {
     create,
     findUnique,
     updateOne,
+    findMany,
 };

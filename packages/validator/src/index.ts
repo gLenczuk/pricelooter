@@ -5,4 +5,3 @@ export * from './schemas/platform';
 export * from './schemas/product';
 
 export { validateSchema } from './validate';
-export * from './keys';

@@ -17,7 +17,7 @@ const createProduct = async (req: ControllerRequest<CreateProductRequest>) => {
 
     if (products.length > 0)
         throw new ExistingResourceError({
-            message: `Product (${products[0].name}) already exists for User (${req.session.user.id})`,
+            message: `Product (${products[0].name}) already exists for this user.`,
         });
 
     const platform = await platformService.findUniquePlatform({ id: platformId });

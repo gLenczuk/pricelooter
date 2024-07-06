@@ -1,10 +1,9 @@
 import { object, string } from 'yup';
-import { VALIDATION_KEYS } from '../keys';
 
 export const CreatePlatformSchema = object({
-    name: string().required(VALIDATION_KEYS.SCHEMA_REQUIRED_KEY),
-    category: string().required(VALIDATION_KEYS.SCHEMA_REQUIRED_KEY),
-    url: string().required(VALIDATION_KEYS.SCHEMA_REQUIRED_KEY).url(VALIDATION_KEYS.SCHEMA_INVALID_URL),
+    name: string().required('Platform name is required.'),
+    category: string().required('Category is required.'),
+    url: string().required('URL is required.').url('Invalid platform URL.'),
 })
-    .noUnknown(true, VALIDATION_KEYS.SCHEMA_ONLY_ALLOWED_KEYS)
+    .noUnknown(true, 'Only keys specified in schema are allowed.')
     .strict(true);

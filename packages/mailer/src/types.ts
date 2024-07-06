@@ -3,6 +3,7 @@ import { Language } from '@pricelooter/types';
 export enum EmailType {
     USER_ACTIVATION = 'USER_ACTIVATION',
     PASSWORD_RESET = 'PASSWORD_RESET',
+    PRODUCT_PRICE_NOTIFICATION = 'PRODUCT_PRICE_NOTIFICATION',
 }
 
 export interface MailerConfig {

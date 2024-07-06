@@ -7,6 +7,7 @@ import { TokenType } from '@pricelooter/types';
 import datefns from 'date-fns';
 import { NotFoundError } from '@pricelooter/exceptions';
 import { userService } from '../user/user.service';
+import { ProductMonitorResults } from '../product/product.types';
 
 const sendAccountActivationEmail = async (params: SendAccountActivationEmailParams) => {
     const config = getApplicationConfig();
@@ -68,7 +69,59 @@ const sendForgotPasswordRequestEmail = async (params: SendForgotPasswordRequestE
     return user;
 };
 
+const processProductMonitorResults = async (params: ProductMonitorResults) => {
+    const { oldProducts, newProducts } = params;
+
+    const productsWithChangedPrices = newProducts.filter(newProduct => {
+        const oldProduct = oldProducts.find(oldProduct => oldProduct.id === newProduct.id);
+
+        if (!oldProduct)
+            throw new NotFoundError({ message: `Cannot find matching old product for ID (${newProduct.id})` });
+
+        return newProduct.price !== oldProduct.price;
+    });
+
+    if (productsWithChangedPrices.length <= 0) return;
+
+    const userIds = productsWithChangedPrices.map(product => product.userId);
+    const users = await userService.findManyUsers({
+        filter: {
+            ids: userIds,
+        },
+    });
+
+    const operations = productsWithChangedPrices.map(async product => {
+        const userForProduct = users.find(user => user.id === product.userId);
+        const oldProduct = oldProducts.find(oldProduct => oldProduct.id === product.id);
+
+        if (!userForProduct)
+            throw new NotFoundError({
+                message: `Cannot find matching user (${product.userId}) for product (${product.id})`,
+            });
+
+        if (!oldProduct)
+            throw new NotFoundError({ message: `Cannot find matching old product for ID (${product.id})` });
+
+        await mailer.sendEmail({
+            type: EmailType.PRODUCT_PRICE_NOTIFICATION,
+            recipient: userForProduct.email,
+            language: 'en',
+            data: {
+                productName: product.name,
+                productUrl: product.url,
+                oldProductPrice: (oldProduct.price / 100).toFixed(2),
+                newProductPrice: (product.price / 100).toFixed(2),
+                oldProductCurrency: oldProduct.currency,
+                newProductCurrency: product.currency,
+            },
+        });
+    });
+
+    await Promise.all(operations);
+};
+
 export const notificationService = {
     sendAccountActivationEmail,
     sendForgotPasswordRequestEmail,
+    processProductMonitorResults,
 };

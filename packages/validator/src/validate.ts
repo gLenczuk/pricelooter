@@ -1,5 +1,4 @@
 import { Schema, ValidateOptions, ValidationError as YupValidationError } from 'yup';
-import { MESSAGES_PER_KEY } from './keys';
 import { ApplicationError, ValidationError } from '@pricelooter/exceptions';
 
 const defaultYupOptions: ValidateOptions = {
@@ -7,11 +6,8 @@ const defaultYupOptions: ValidateOptions = {
 };
 
 const getSingleError = (error: YupValidationError) => {
-    const key = error.errors[0] as keyof typeof MESSAGES_PER_KEY;
-
     const err = new ValidationError({
-        message: MESSAGES_PER_KEY[key],
-        key: error.errors[0],
+        message: error.errors[0],
         field: error.path,
     });
 
@@ -20,11 +16,8 @@ const getSingleError = (error: YupValidationError) => {
 
 const getMultipleErrors = (error: YupValidationError) => {
     const errors = error.inner.map(error => {
-        const key = error.errors[0] as keyof typeof MESSAGES_PER_KEY;
-
         return new ValidationError({
-            message: MESSAGES_PER_KEY[key],
-            key: error.errors[0],
+            message: error.errors[0],
             field: error.path,
         });
     });
