@@ -1,4 +1,4 @@
-import { CreateProductRequest, EmptyObject } from '@pricelooter/types';
+import { CreateProductRequest, GetProductsRequest } from '@pricelooter/types';
 import { ControllerRequest } from '../../types';
 import { platformService } from '../platform/platform.service';
 import { AuthenticationError, ExistingResourceError, NotFoundError } from '@pricelooter/exceptions';
@@ -32,14 +32,23 @@ const createProduct = async (req: ControllerRequest<CreateProductRequest>) => {
     });
 };
 
-const getProducts = async (req: ControllerRequest<EmptyObject>) => {
+const getProducts = async (req: ControllerRequest<GetProductsRequest>) => {
     if (!req.session.user) throw new AuthenticationError({ message: 'Cannot find session user.' });
 
-    return productService.findManyProducts({
+    const query = {
         filter: {
             userId: req.session.user.id,
         },
-    });
+        pagination: {
+            page: req.body.page,
+            perPage: 10,
+        },
+    };
+
+    const totalProductsCount = await productService.countProducts(query);
+    const products = await productService.findManyProducts(query);
+
+    return { products, totalProductsCount };
 };
 
 export const productController = {

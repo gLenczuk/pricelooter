@@ -10,6 +10,9 @@ const getProductsServerRequest = async () => {
         headers: {
             Cookie: parseServerCookies(),
         },
+        params: {
+            page: 1,
+        },
     });
 
     return response.data;
@@ -20,7 +23,7 @@ const DashboardPage = async () => {
 
     await queryClient.prefetchQuery({
         queryFn: getProductsServerRequest,
-        queryKey: [GET_USER_PRODUCTS_QUERY_KEY],
+        queryKey: [GET_USER_PRODUCTS_QUERY_KEY, 1],
     });
 
     return (

@@ -43,11 +43,19 @@ interface FindManyProductsFilterDTO {
 
 interface FindManyProductsDTO {
     filter?: FindManyProductsFilterDTO;
+    pagination?: {
+        page: number;
+        perPage: number;
+    };
+}
+
+interface CountProductsDTO {
+    filter?: FindManyProductsFilterDTO;
 }
 
 export type CreateDatabaseProductQuery = CreateProductDTO;
 
-export interface CreateDomainProductParams {
+export interface CreateProductParams {
     url: string;
     platformName: string;
     platformId: number;
@@ -55,11 +63,15 @@ export interface CreateDomainProductParams {
 }
 export type FindOneDatabaseProductQuery = FindOneProductDTO;
 
-export type FindUniqueDomainProductParams = FindOneProductDTO;
+export type FindUniqueProductParams = FindOneProductDTO;
 
 export type FindManyDatabaseProuductsQuery = FindManyProductsDTO;
 
-export type FindManyDomainProductsParams = FindManyProductsDTO;
+export type CountDatabaseProductsQuery = CountProductsDTO;
+
+export type CountProductsParams = CountProductsDTO;
+
+export type FindManyProductsParams = FindManyProductsDTO;
 
 export type UpdateOneDatabaseProductQuery = UpdateOneProductDTO;
 

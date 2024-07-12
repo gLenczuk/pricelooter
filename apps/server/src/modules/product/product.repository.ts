@@ -5,6 +5,7 @@ import {
     FindOneDatabaseProductQuery,
     FindManyDatabaseProuductsQuery,
     UpdateOneDatabaseProductQuery,
+    CountDatabaseProductsQuery,
 } from './product.types';
 
 const create = async (query: CreateDatabaseProductQuery) => {
@@ -41,11 +42,28 @@ const findOne = async (query: FindOneDatabaseProductQuery) => {
     return product ? productMapper.mapDatabaseProductToProductDTO(product) : null;
 };
 
-const findMany = async (query?: FindManyDatabaseProuductsQuery) => {
+const findMany = async (query: FindManyDatabaseProuductsQuery) => {
     const products = await prisma.product.findMany({
         where: {
-            url: query?.filter?.url,
-            userId: query?.filter?.userId,
+            url: query.filter?.url,
+            userId: query.filter?.userId,
+            scrapedAt: {
+                gte: query?.filter?.scrapedAt?.expression === 'gte' ? query.filter.scrapedAt.value : undefined,
+                lte: query?.filter?.scrapedAt?.expression === 'lte' ? query.filter.scrapedAt.value : undefined,
+            },
+        },
+        take: query.pagination ? query.pagination.perPage : undefined,
+        skip: query.pagination ? (query.pagination.page - 1) * query.pagination.perPage : undefined,
+    });
+
+    return products.map(productMapper.mapDatabaseProductToProductDTO);
+};
+
+const count = async (query: CountDatabaseProductsQuery) => {
+    const totalCount = await prisma.product.count({
+        where: {
+            url: query.filter?.url,
+            userId: query.filter?.userId,
             scrapedAt: {
                 gte: query?.filter?.scrapedAt?.expression === 'gte' ? query.filter.scrapedAt.value : undefined,
                 lte: query?.filter?.scrapedAt?.expression === 'lte' ? query.filter.scrapedAt.value : undefined,
@@ -53,7 +71,7 @@ const findMany = async (query?: FindManyDatabaseProuductsQuery) => {
         },
     });
 
-    return products.map(productMapper.mapDatabaseProductToProductDTO);
+    return totalCount;
 };
 
 const updateOne = async (query: UpdateOneDatabaseProductQuery) => {
@@ -72,4 +90,5 @@ export const productRepository = {
     findOne,
     findMany,
     updateOne,
+    count,
 };

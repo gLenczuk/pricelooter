@@ -48,8 +48,10 @@ productRouter.get(
     withAsyncHandler(async (req: ExpressRequest, res: ExpressResponse<GetProductsResponse>) => {
         const language = getRequestLanguage(req.headers['accept-language']);
 
-        const products = await productController.getProducts({
-            body: {},
+        const { products, totalProductsCount } = await productController.getProducts({
+            body: {
+                page: Number(req.query.page) ?? 1,
+            },
             session: req.session as ExtendedExpressSession,
             config: getApplicationConfig(),
             language,
@@ -58,7 +60,9 @@ productRouter.get(
         res.status(200).json({
             body: { products },
             key: 'products_found',
-            meta: {},
+            meta: {
+                count: totalProductsCount,
+            },
         });
     }),
 );

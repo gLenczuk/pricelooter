@@ -22,7 +22,6 @@ import {
     Pagination,
     PaginationContent,
     PaginationItem,
-    PaginationLink,
     PaginationNext,
     PaginationPrevious,
 } from 'components/core/Pagination';
@@ -47,6 +46,7 @@ import { usePlatformsQuery } from 'queries/getPlatformsQuery';
 
 export const Dashboard = () => {
     const [isDialogOpened, openDialog] = useState(false);
+    const [currentPage, setPage] = useState(1);
     const { toast } = useToast();
     const { createProduct, isCreatingProduct, createProductError } = useCreateProductMutation({
         onSuccess: () => {
@@ -59,9 +59,11 @@ export const Dashboard = () => {
         },
     });
 
-    const { products, isLoadingProducts } = useUserProductsQuery();
+    const { products, isLoadingProducts, meta } = useUserProductsQuery({ page: currentPage });
     const { platforms } = usePlatformsQuery();
     const categories = [{ name: 'Gaming', icon: <GamepadIcon className="mr-2" /> }];
+
+    const totalPages = Math.ceil(meta?.count / 10);
 
     const {
         register,
@@ -196,7 +198,6 @@ export const Dashboard = () => {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>ID</TableHead>
                                     <TableHead>Name</TableHead>
                                     <TableHead>Platform</TableHead>
                                     <TableHead>Status</TableHead>
@@ -216,7 +217,6 @@ export const Dashboard = () => {
 
                                         return (
                                             <TableRow key={product.id}>
-                                                <TableCell className="font-medium py-3">{product.id}</TableCell>
                                                 <TableCell className="py-3">{product.name}</TableCell>
                                                 <TableCell className="py-3">{productPlatformName}</TableCell>
                                                 <TableCell className="py-3">
@@ -255,27 +255,34 @@ export const Dashboard = () => {
                                     })}
                             </TableBody>
                         </Table>
-                        <Pagination className="md:justify-end justify-center mt-8">
-                            <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious className="cursor-pointer" />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink className="cursor-pointer">1</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink className="cursor-pointer" isActive>
-                                        2
-                                    </PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink className="cursor-pointer">3</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationNext className="cursor-pointer" />
-                                </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
+                        <div className="flex items-center justify-between mt-8">
+                            <span className="text-[15px] text-slate-500 font-medium">
+                                {currentPage !== 1 ? (currentPage - 1) * 10 + 1 : 1} -{' '}
+                                {currentPage * 10 > meta?.count ? meta?.count : currentPage * 10} of {meta?.count}
+                            </span>
+                            <div>
+                                <Pagination className="md:justify-end justify-center">
+                                    <PaginationContent>
+                                        <PaginationItem
+                                            onClick={() => {
+                                                if (currentPage === 1) return;
+                                                setPage(currentPage - 1);
+                                            }}
+                                        >
+                                            <PaginationPrevious className="cursor-pointer" />
+                                        </PaginationItem>
+                                        <PaginationItem
+                                            onClick={() => {
+                                                if (currentPage === totalPages) return;
+                                                setPage(currentPage + 1);
+                                            }}
+                                        >
+                                            <PaginationNext className="cursor-pointer" />
+                                        </PaginationItem>
+                                    </PaginationContent>
+                                </Pagination>
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
             </section>

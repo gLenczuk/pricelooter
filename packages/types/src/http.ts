@@ -15,4 +15,4 @@ export type GetCurrentUserResponse = HttpResponse<{ user: Omit<UserDTO, 'passwor
 export type CreatePlatformResponse = HttpResponse<{ platform: PlatformDTO }>;
 export type GetPlatformsResponse = HttpResponse<{ platforms: PlatformDTO[] }>;
 export type CreateProductResponse = HttpResponse<{ product: ProductDTO }>;
-export type GetProductsResponse = HttpResponse<{ products: ProductDTO[] }>;
+export type GetProductsResponse = HttpResponse<{ products: ProductDTO[] }, { count: number }>;

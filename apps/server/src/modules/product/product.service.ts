@@ -1,16 +1,17 @@
 import { productRepository } from './product.repository';
 import { scraperService } from '@pricelooter/scraper';
 import {
-    CreateDomainProductParams,
-    FindUniqueDomainProductParams,
-    FindManyDomainProductsParams,
     ProductMonitorResults,
+    CreateProductParams,
+    FindManyProductsParams,
+    FindUniqueProductParams,
+    CountProductsParams,
 } from './product.types';
 import { subHours } from 'date-fns';
 import { platformService } from '../platform/platform.service';
 import { NotFoundError } from '@pricelooter/exceptions';
 
-const createProduct = async (params: CreateDomainProductParams) => {
+const createProduct = async (params: CreateProductParams) => {
     const scraper = scraperService.getScraperForPlatformName(params.platformName);
     const results = await scraper.run({ url: params.url });
 
@@ -25,14 +26,18 @@ const createProduct = async (params: CreateDomainProductParams) => {
     });
 };
 
-const findUniqueProduct = async (params: FindUniqueDomainProductParams) => {
+const findUniqueProduct = async (params: FindUniqueProductParams) => {
     return productRepository.findOne({
         id: params.id,
     });
 };
 
-const findManyProducts = async (params?: FindManyDomainProductsParams) => {
+const findManyProducts = async (params: FindManyProductsParams) => {
     return productRepository.findMany(params);
+};
+
+const countProducts = async (params: CountProductsParams) => {
+    return productRepository.count(params);
 };
 
 const findExpiredProductsToScrape = async () => {
@@ -106,4 +111,5 @@ export const productService = {
     findUniqueProduct,
     findManyProducts,
     runProductMonitor,
+    countProducts,
 };

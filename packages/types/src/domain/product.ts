@@ -33,3 +33,7 @@ export interface CreateProductRequest {
     url: string;
     platformId: number;
 }
+
+export interface GetProductsRequest {
+    page: number;
+}
