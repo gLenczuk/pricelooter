@@ -1,5 +1,5 @@
 'use client';
-import { User, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -39,11 +39,7 @@ export const DashboardHeader = () => {
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <User className="mr-2 h-4 w-4" />
-                                <span>Profile</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => logoutUser()}>
+                            <DropdownMenuItem className="cursor-pointer" onClick={() => logoutUser()}>
                                 <LogOut className="mr-2 h-4 w-4" />
                                 <span>Log out</span>
                             </DropdownMenuItem>

@@ -7,17 +7,19 @@ import { Label } from 'components/core/Label';
 import { AlertCircle } from 'lucide-react';
 import { useCreateUserMutation } from 'mutations/createUserMutation';
 import Link from 'next/link';
-import { FormEvent } from 'react';
+import { FC, FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CreateUserSchema } from '@pricelooter/validator';
-import { useRouter } from 'next/navigation';
 
-export const RegisterForm = () => {
-    const router = useRouter();
+interface RegisterFormProps {
+    onSuccess?: () => void;
+}
+
+export const RegisterForm: FC<RegisterFormProps> = ({ onSuccess }) => {
     const { createUser, isCreatingUser, createUserError } = useCreateUserMutation({
         onSuccess: () => {
-            router.push('/');
+            if (onSuccess) onSuccess();
         },
     });
 

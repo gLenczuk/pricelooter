@@ -40,7 +40,7 @@ const sendForgotPasswordRequestEmail = async (params: SendForgotPasswordRequestE
 
     if (!user)
         throw new NotFoundError({
-            message: `Cannot find user for given email (${params.email}).`,
+            message: `Cannot find user for given email.`,
             key: 'user_not_found',
         });
 

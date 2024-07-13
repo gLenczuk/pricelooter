@@ -257,7 +257,7 @@ export const Dashboard = () => {
                         </Table>
                         <div className="flex items-center justify-between mt-8">
                             <span className="text-[15px] text-slate-500 font-medium">
-                                {currentPage !== 1 ? (currentPage - 1) * 10 + 1 : 1} -{' '}
+                                {currentPage !== 1 ? (currentPage - 1) * 10 + 1 : meta?.count > 0 ? 1 : 0} -{' '}
                                 {currentPage * 10 > meta?.count ? meta?.count : currentPage * 10} of {meta?.count}
                             </span>
                             <div>
@@ -273,7 +273,7 @@ export const Dashboard = () => {
                                         </PaginationItem>
                                         <PaginationItem
                                             onClick={() => {
-                                                if (currentPage === totalPages) return;
+                                                if (currentPage === totalPages || meta?.count <= 0) return;
                                                 setPage(currentPage + 1);
                                             }}
                                         >
