@@ -1,5 +1,5 @@
 {
-    "name": "@pricelooter/server",
+    "name": "@pricelooter/admin-panel",
     "version": "1.0.0",
     "private": true,
     "type": "module",
@@ -12,9 +12,6 @@
     "dependencies": {
         "@pricelooter/types": "workspace:*",
         "@pricelooter/logger": "workspace:*",
-        "@pricelooter/exceptions": "workspace:*",
-        "@pricelooter/validator": "workspace:*",
-        "@pricelooter/mailer": "workspace:*",
-        "@pricelooter/scraper": "workspace:*"
+        "@pricelooter/exceptions": "workspace:*"
     }
 }

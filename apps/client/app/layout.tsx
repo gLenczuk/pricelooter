@@ -1,5 +1,5 @@
 import '../globals.css';
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, Suspense } from 'react';
 import { inter } from '../fonts';
 import { ReactQueryProvider } from 'providers/ReactQueryProvider';
 import { ToastProvider } from 'providers/ToastProvider';
@@ -12,8 +12,10 @@ const RootLayout: FC<Props> = async ({ children }) => {
     return (
         <html lang="en" className={inter.className}>
             <body>
-                <ReactQueryProvider>{children}</ReactQueryProvider>
-                <ToastProvider />
+                <Suspense>
+                    <ReactQueryProvider>{children}</ReactQueryProvider>
+                    <ToastProvider />
+                </Suspense>
             </body>
         </html>
     );

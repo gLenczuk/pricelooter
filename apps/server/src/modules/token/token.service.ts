@@ -7,7 +7,7 @@ import {
     ValidateAccountActivationTokenParams,
     ValidatePasswordResetTokenParams,
 } from './token.types';
-import datefns from 'date-fns';
+import { isAfter } from 'date-fns';
 
 const createToken = async (params: CreateTokenParams) => {
     return tokenRepository.create({
@@ -47,7 +47,7 @@ const validateAccountActivationToken = async (params: ValidateAccountActivationT
     }
 
     const now = new Date();
-    const isTokenExpired = datefns.isAfter(now, databaseToken.expiresAt);
+    const isTokenExpired = isAfter(now, databaseToken.expiresAt);
 
     if (isTokenExpired) {
         return {
@@ -87,7 +87,7 @@ const validatePasswordResetToken = async (params: ValidatePasswordResetTokenPara
     }
 
     const now = new Date();
-    const isTokenExpired = datefns.isAfter(now, databaseToken.expiresAt);
+    const isTokenExpired = isAfter(now, databaseToken.expiresAt);
 
     if (isTokenExpired) {
         return {

@@ -4,10 +4,10 @@ import { mailer } from '../../libs/mailer';
 import { SendAccountActivationEmailParams, SendForgotPasswordRequestEmailParams } from './notification.types';
 import { tokenService } from '../token/token.service';
 import { TokenType } from '@pricelooter/types';
-import datefns from 'date-fns';
 import { NotFoundError } from '@pricelooter/exceptions';
 import { userService } from '../user/user.service';
 import { ProductMonitorResults } from '../product/product.types';
+import { addHours } from 'date-fns';
 
 const sendAccountActivationEmail = async (params: SendAccountActivationEmailParams) => {
     const config = getApplicationConfig();
@@ -15,7 +15,7 @@ const sendAccountActivationEmail = async (params: SendAccountActivationEmailPara
     if (!config.ENABLE_ACCOUNT_ACTIVATIONS) return;
 
     const now = new Date();
-    const inOneHourDate = datefns.addHours(now, 1);
+    const inOneHourDate = addHours(now, 1);
 
     const token = await tokenService.createToken({
         type: TokenType.UserActivation,
@@ -46,7 +46,7 @@ const sendForgotPasswordRequestEmail = async (params: SendForgotPasswordRequestE
 
     const config = getApplicationConfig();
     const now = new Date();
-    const inOneHourDate = datefns.addHours(now, 1);
+    const inOneHourDate = addHours(now, 1);
 
     const token = await tokenService.createToken({
         type: TokenType.PasswordReset,
