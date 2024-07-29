@@ -62,7 +62,7 @@ const sendForgotPasswordRequestEmail = async (params: SendForgotPasswordRequestE
         recipient: params.email,
         language: params.language,
         data: {
-            resetPasswordUrl: `${config.CLIENT_URL}/auth/reset-password?token=${token.id}&userId=${user.id}`,
+            resetPasswordUrl: `${config.CLIENT_URL}/reset-password?token=${token.id}&userId=${user.id}`,
         },
     });
 

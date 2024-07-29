@@ -37,3 +37,7 @@ export interface CreateProductRequest {
 export interface GetProductsRequest {
     page: number;
 }
+
+export interface DeleteProductRequest {
+    productId: number;
+}

@@ -4,7 +4,7 @@ import { withSchemaValidation } from '../../middlewares/withSchemaValidation';
 import { ExtendedExpressSession, TypedExpressRequest } from '../../types';
 import withAsyncHandler from 'express-async-handler';
 import { CreateProductSchema } from '@pricelooter/validator';
-import { CreateProductRequest, GetProductsResponse } from '@pricelooter/types';
+import { CreateProductRequest, EmptyResponse, GetProductsResponse } from '@pricelooter/types';
 import { withSessionAuthentication } from '../../middlewares/withSessionAuthentication';
 import { productController } from './product.controller';
 import { CreateProductResponse } from '@pricelooter/types';
@@ -15,6 +15,7 @@ export const productRouter = express.Router();
 
 export const CREATE_PRODUCT_ENDPOINT = '/api/v1/products';
 export const GET_PRODUCTS_ENDPOINT = '/api/v1/products/me';
+export const DELETE_PRODUCT_ENDPOINT = '/api/v1/products/:id';
 
 productRouter.post(
     CREATE_PRODUCT_ENDPOINT,
@@ -63,6 +64,29 @@ productRouter.get(
             meta: {
                 count: totalProductsCount,
             },
+        });
+    }),
+);
+
+productRouter.delete(
+    DELETE_PRODUCT_ENDPOINT,
+    withSessionAuthentication,
+    withAsyncHandler(async (req: ExpressRequest, res: ExpressResponse<EmptyResponse>) => {
+        const language = getRequestLanguage(req.headers['accept-language']);
+
+        const response = await productController.deleteProduct({
+            body: {
+                productId: Number(req.params.id),
+            },
+            session: req.session as ExtendedExpressSession,
+            config: getApplicationConfig(),
+            language,
+        });
+
+        res.status(200).json({
+            body: response,
+            key: 'product_deleted',
+            meta: {},
         });
     }),
 );

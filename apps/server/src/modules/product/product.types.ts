@@ -17,6 +17,7 @@ interface UpdateProductDataDTO {
     currency?: Currency;
     shopStatus?: ProductShopStatus;
     scrapedAt?: Date;
+    deletedAt?: Date;
 }
 
 interface UpdateProductFilterDTO {
@@ -72,6 +73,8 @@ export type CountDatabaseProductsQuery = CountProductsDTO;
 export type CountProductsParams = CountProductsDTO;
 
 export type FindManyProductsParams = FindManyProductsDTO;
+
+export type UpdateProductParams = UpdateOneProductDTO;
 
 export type UpdateOneDatabaseProductQuery = UpdateOneProductDTO;
 

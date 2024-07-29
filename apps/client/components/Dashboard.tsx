@@ -43,17 +43,32 @@ import { FormEvent, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { format } from 'date-fns';
 import { usePlatformsQuery } from 'queries/getPlatformsQuery';
+import { useDeleteProductMutation } from 'mutations/deleteProductMutation';
 
 export const Dashboard = () => {
-    const [isDialogOpened, openDialog] = useState(false);
+    const [isCreateProductOpened, openCreateProduct] = useState(false);
+    const [selectedProductId, selectProductId] = useState(0);
+    const [isDeleteProductOpened, openDeleteProduct] = useState(false);
     const [currentPage, setPage] = useState(1);
     const { toast } = useToast();
+
     const { createProduct, isCreatingProduct, createProductError } = useCreateProductMutation({
         onSuccess: () => {
-            openDialog(false);
+            openCreateProduct(false);
             resetFormData();
             toast({
                 description: 'Product was added successfuly.',
+                duration: 5000,
+            });
+        },
+    });
+
+    const { deleteProduct, isDeletingProduct, deleteProductError } = useDeleteProductMutation({
+        onSuccess: () => {
+            openDeleteProduct(false);
+            selectProductId(0);
+            toast({
+                description: 'Product was deleted successfuly.',
                 duration: 5000,
             });
         },
@@ -101,9 +116,9 @@ export const Dashboard = () => {
                             <CardDescription>Active tracked products added by you.</CardDescription>
                         </div>
                         <Dialog
-                            open={isDialogOpened}
+                            open={isCreateProductOpened}
                             onOpenChange={isOpened => {
-                                openDialog(isOpened);
+                                openCreateProduct(isOpened);
                                 resetFormData();
                             }}
                         >
@@ -245,6 +260,10 @@ export const Dashboard = () => {
                                                         size={20}
                                                     ></SquareMousePointer>
                                                     <TrashIcon
+                                                        onClick={() => {
+                                                            selectProductId(product.id);
+                                                            openDeleteProduct(true);
+                                                        }}
                                                         className="cursor-pointer ml-2"
                                                         color="gray"
                                                         size={20}
@@ -255,6 +274,41 @@ export const Dashboard = () => {
                                     })}
                             </TableBody>
                         </Table>
+                        <Dialog
+                            open={isDeleteProductOpened}
+                            onOpenChange={isOpened => {
+                                openDeleteProduct(isOpened);
+                            }}
+                        >
+                            <DialogContent className="sm:max-w-[425px]">
+                                <DialogHeader>
+                                    <DialogTitle>Are you sure?</DialogTitle>
+                                    <DialogDescription className="text-[16px]">
+                                        This action will delete product and cannot be undone.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                {deleteProductError && !isDeletingProduct && (
+                                    <Alert variant="destructive">
+                                        <AlertCircle className="h-4 w-4" />
+                                        <AlertTitle>Error</AlertTitle>
+                                        <AlertDescription>{deleteProductError.message}</AlertDescription>
+                                    </Alert>
+                                )}
+                                <DialogFooter>
+                                    <Button variant="outline" disabled={isDeletingProduct} className="mt-2">
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        onClick={() => deleteProduct({ productId: selectedProductId })}
+                                        variant="destructive"
+                                        disabled={isDeletingProduct}
+                                        className="mt-2"
+                                    >
+                                        Delete
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                         <div className="flex items-center justify-between mt-8">
                             <span className="text-[15px] text-slate-500 font-medium">
                                 {currentPage !== 1 ? (currentPage - 1) * 10 + 1 : meta?.count > 0 ? 1 : 0} -{' '}

@@ -6,6 +6,7 @@ import {
     FindManyProductsParams,
     FindUniqueProductParams,
     CountProductsParams,
+    UpdateProductParams,
 } from './product.types';
 import { subHours } from 'date-fns';
 import { platformService } from '../platform/platform.service';
@@ -38,6 +39,10 @@ const findManyProducts = async (params: FindManyProductsParams) => {
 
 const countProducts = async (params: CountProductsParams) => {
     return productRepository.count(params);
+};
+
+const updateProduct = async (params: UpdateProductParams) => {
+    return productRepository.updateOne(params);
 };
 
 const findExpiredProductsToScrape = async () => {
@@ -112,4 +117,5 @@ export const productService = {
     findManyProducts,
     runProductMonitor,
     countProducts,
+    updateProduct,
 };

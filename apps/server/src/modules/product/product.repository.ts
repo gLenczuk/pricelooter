@@ -51,6 +51,9 @@ const findMany = async (query: FindManyDatabaseProuductsQuery) => {
                 gte: query?.filter?.scrapedAt?.expression === 'gte' ? query.filter.scrapedAt.value : undefined,
                 lte: query?.filter?.scrapedAt?.expression === 'lte' ? query.filter.scrapedAt.value : undefined,
             },
+            deletedAt: {
+                equals: null,
+            },
         },
         take: query.pagination ? query.pagination.perPage : undefined,
         skip: query.pagination ? (query.pagination.page - 1) * query.pagination.perPage : undefined,
@@ -67,6 +70,9 @@ const count = async (query: CountDatabaseProductsQuery) => {
             scrapedAt: {
                 gte: query?.filter?.scrapedAt?.expression === 'gte' ? query.filter.scrapedAt.value : undefined,
                 lte: query?.filter?.scrapedAt?.expression === 'lte' ? query.filter.scrapedAt.value : undefined,
+            },
+            deletedAt: {
+                equals: null,
             },
         },
     });

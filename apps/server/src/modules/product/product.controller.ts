@@ -1,7 +1,7 @@
-import { CreateProductRequest, GetProductsRequest } from '@pricelooter/types';
+import { CreateProductRequest, DeleteProductRequest, GetProductsRequest } from '@pricelooter/types';
 import { ControllerRequest } from '../../types';
 import { platformService } from '../platform/platform.service';
-import { AuthenticationError, ExistingResourceError, NotFoundError } from '@pricelooter/exceptions';
+import { AuthenticationError, AuthorizationError, ExistingResourceError, NotFoundError } from '@pricelooter/exceptions';
 import { productService } from './product.service';
 
 const createProduct = async (req: ControllerRequest<CreateProductRequest>) => {
@@ -51,7 +51,35 @@ const getProducts = async (req: ControllerRequest<GetProductsRequest>) => {
     return { products, totalProductsCount };
 };
 
+const deleteProduct = async (req: ControllerRequest<DeleteProductRequest>) => {
+    const { productId } = req.body;
+    if (!req.session.user) throw new AuthenticationError({ message: 'Cannot find session user.' });
+
+    const product = await productService.findUniqueProduct({
+        id: productId,
+    });
+
+    if (!product) throw new NotFoundError({ message: 'Product not found.' });
+
+    if (product.userId !== req.session.user.id)
+        throw new AuthorizationError({
+            message: 'Cannot remove product that does not belong to current logged in user.',
+        });
+
+    await productService.updateProduct({
+        filter: {
+            id: productId,
+        },
+        data: {
+            deletedAt: new Date(),
+        },
+    });
+
+    return {};
+};
+
 export const productController = {
     createProduct,
     getProducts,
+    deleteProduct,
 };
