@@ -15,14 +15,8 @@ agent.interceptors.response.use(undefined, error => {
         return Promise.reject(error.response.data.errors);
     }
 
-    if (error instanceof AxiosError && 'request' in error) {
-        const exception = new ApplicationError({ message: error.message, key: 'internal_server_error' });
-        const mappedException = useErrorHandler(exception);
+    const exception = new ApplicationError({ message: 'Internal server error.' });
+    const mappedException = useErrorHandler(exception);
 
-        return Promise.reject(mappedException);
-    }
-
-    const exception = new ApplicationError({ message: error.message, key: 'internal_server_error' });
-    const errors = useErrorHandler(exception);
-    return Promise.reject(errors);
+    return Promise.reject(mappedException);
 });

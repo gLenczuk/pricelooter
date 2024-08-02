@@ -1,4 +1,4 @@
-import { GetCurrentUserResponse } from '@pricelooter/types';
+import { GetProductsResponse } from '@pricelooter/types';
 import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
 import { Dashboard } from 'components/Dashboard';
 import { agent } from 'http/agent';
@@ -6,7 +6,7 @@ import { parseServerCookies } from 'http/utils';
 import { GET_USER_PRODUCTS_QUERY_KEY } from 'queries/keys';
 
 const getProductsServerRequest = async () => {
-    const response = await agent.get<GetCurrentUserResponse>('/api/v1/products/me', {
+    const response = await agent.get<GetProductsResponse>('/api/v1/products/me', {
         headers: {
             Cookie: parseServerCookies(),
         },
