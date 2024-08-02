@@ -3,28 +3,26 @@ import sendgrid from '@sendgrid/mail';
 import path from 'path';
 import ejs from 'ejs';
 import { EmailDTO, MailerConfig, Mailer } from '../types';
-import { emailTemplatesByType, subjectTranslations } from '../utils';
+import { emailTemplatesByType, subjectsPerEmailType } from '../utils';
 
 const sendEmailWithSendgrid = async (email: EmailDTO, config: MailerConfig) => {
     if (!email.recipient) {
         throw new ValidationError({ message: 'Missing recipient. Cannot send an email.' });
     }
 
-    const subjectTranslationsForEmailType = subjectTranslations[email.type];
-    const subject = subjectTranslationsForEmailType[email.language];
+    const subject = subjectsPerEmailType[email.type];
 
     if (!subject) {
         throw new ValidationError({ message: 'Missing subject. Cannot send an email.' });
     }
 
     const emailTemplate = emailTemplatesByType[email.type];
-    const emailLanguage = email.language || 'pl';
-    const pathToTemplate = path.join(__dirname, `../templates/${emailLanguage}/${emailTemplate}`);
 
     if (!emailTemplate) {
         throw new ValidationError({ message: 'Missing email template.' });
     }
 
+    const pathToTemplate = path.join(__dirname, `../templates/${emailTemplate}`);
     const renderedTemplate = await ejs.renderFile(pathToTemplate, email.data);
 
     const message = {

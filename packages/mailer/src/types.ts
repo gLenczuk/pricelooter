@@ -1,5 +1,3 @@
-import { Language } from '@pricelooter/types';
-
 export enum EmailType {
     USER_ACTIVATION = 'USER_ACTIVATION',
     PASSWORD_RESET = 'PASSWORD_RESET',
@@ -22,7 +20,6 @@ export interface EmailDTO {
     type: EmailType;
     recipient: string;
     data: Record<string, unknown>;
-    language: Language;
 }
 
 export interface Mailer {

@@ -5,7 +5,6 @@ import { CreateUserRequest, CreateUserResponse, UpdateUserRequest, UpdateUserRes
 import { ExtendedExpressSession, TypedExpressRequest } from '../../types';
 import withAsyncHandler from 'express-async-handler';
 import { SyncEventEmitter } from '../../libs/sync-event-emitter';
-import { getRequestLanguage } from '../../utils/getRequestLanguage';
 import { withSchemaValidation } from '../../middlewares/withSchemaValidation';
 import { CreateUserSchema, ActivateUserSchema, ResetPasswordSchema } from '@pricelooter/validator';
 import { withSessionAuthentication } from '../../middlewares/withSessionAuthentication';
@@ -23,16 +22,13 @@ userRouter.post(
     CREATE_USER_ENDPOINT,
     withSchemaValidation(CreateUserSchema),
     withAsyncHandler(async (req: TypedExpressRequest<CreateUserRequest>, res: ExpressResponse<CreateUserResponse>) => {
-        const language = getRequestLanguage(req.headers['accept-language']);
-
         const user = await userController.createUser({
             body: req.body,
             session: req.session as ExtendedExpressSession,
             config: getApplicationConfig(),
-            language,
         });
 
-        SyncEventEmitter.emit('ON_USER_CREATED', { user, language });
+        SyncEventEmitter.emit('ON_USER_CREATED', { user });
 
         res.status(201).json({
             body: { user: { ...user, password: null } },
@@ -52,13 +48,10 @@ userRouter.patch(
         'operation',
     ),
     withAsyncHandler(async (req: TypedExpressRequest<UpdateUserRequest>, res: ExpressResponse<UpdateUserResponse>) => {
-        const language = getRequestLanguage(req.headers['accept-language']);
-
         const user = await userController.updateUser({
             body: req.body,
             session: req.session as ExtendedExpressSession,
             config: getApplicationConfig(),
-            language,
         });
 
         res.status(200).json({
@@ -74,7 +67,6 @@ userRouter.patch(
     withMultipleSchemaValidation<UserUpdateSchemas>({}, 'operation'),
     withSessionAuthentication,
     withAsyncHandler(async (req: TypedExpressRequest<UpdateUserRequest>, res: ExpressResponse<UpdateUserResponse>) => {
-        const language = getRequestLanguage(req.headers['accept-language']);
         const userId = Number(req.params.id);
 
         if (!userId || typeof userId !== 'number') {
@@ -91,7 +83,6 @@ userRouter.patch(
             body: req.body,
             session: req.session as ExtendedExpressSession,
             config: getApplicationConfig(),
-            language,
         });
 
         res.status(200).json({

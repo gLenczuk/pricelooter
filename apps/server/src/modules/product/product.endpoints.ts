@@ -8,7 +8,6 @@ import { CreateProductRequest, EmptyResponse, GetProductsResponse } from '@price
 import { withSessionAuthentication } from '../../middlewares/withSessionAuthentication';
 import { productController } from './product.controller';
 import { CreateProductResponse } from '@pricelooter/types';
-import { getRequestLanguage } from '../../utils/getRequestLanguage';
 import { SyncEventEmitter } from '../../libs/sync-event-emitter';
 
 export const productRouter = express.Router();
@@ -23,16 +22,13 @@ productRouter.post(
     withSessionAuthentication,
     withAsyncHandler(
         async (req: TypedExpressRequest<CreateProductRequest>, res: ExpressResponse<CreateProductResponse>) => {
-            const language = getRequestLanguage(req.headers['accept-language']);
-
             const product = await productController.createProduct({
                 body: req.body,
                 session: req.session as ExtendedExpressSession,
                 config: getApplicationConfig(),
-                language,
             });
 
-            SyncEventEmitter.emit('ON_PRODUCT_CREATED', { product, language });
+            SyncEventEmitter.emit('ON_PRODUCT_CREATED', { product });
 
             res.status(201).json({
                 body: { product },
@@ -47,15 +43,12 @@ productRouter.get(
     GET_PRODUCTS_ENDPOINT,
     withSessionAuthentication,
     withAsyncHandler(async (req: ExpressRequest, res: ExpressResponse<GetProductsResponse>) => {
-        const language = getRequestLanguage(req.headers['accept-language']);
-
         const { products, totalProductsCount } = await productController.getProducts({
             body: {
                 page: Number(req.query.page) ?? 1,
             },
             session: req.session as ExtendedExpressSession,
             config: getApplicationConfig(),
-            language,
         });
 
         res.status(200).json({
@@ -72,15 +65,12 @@ productRouter.delete(
     DELETE_PRODUCT_ENDPOINT,
     withSessionAuthentication,
     withAsyncHandler(async (req: ExpressRequest, res: ExpressResponse<EmptyResponse>) => {
-        const language = getRequestLanguage(req.headers['accept-language']);
-
         const response = await productController.deleteProduct({
             body: {
                 productId: Number(req.params.id),
             },
             session: req.session as ExtendedExpressSession,
             config: getApplicationConfig(),
-            language,
         });
 
         res.status(200).json({

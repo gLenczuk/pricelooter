@@ -28,7 +28,6 @@ const sendAccountActivationEmail = async (params: SendAccountActivationEmailPara
     await mailer.sendEmail({
         type: EmailType.USER_ACTIVATION,
         recipient: params.userEmail,
-        language: params.language,
         data: {
             activationUrl: `${config.CLIENT_URL}/activate-account?token=${token.id}&userId=${params.userId}`,
         },
@@ -60,7 +59,6 @@ const sendForgotPasswordRequestEmail = async (params: SendForgotPasswordRequestE
     await mailer.sendEmail({
         type: EmailType.PASSWORD_RESET,
         recipient: params.email,
-        language: params.language,
         data: {
             resetPasswordUrl: `${config.CLIENT_URL}/reset-password?token=${token.id}&userId=${user.id}`,
         },
@@ -105,7 +103,6 @@ const processProductMonitorResults = async (params: ProductMonitorResults) => {
         await mailer.sendEmail({
             type: EmailType.PRODUCT_PRICE_NOTIFICATION,
             recipient: userForProduct.email,
-            language: 'en',
             data: {
                 productName: product.name,
                 productUrl: product.url,

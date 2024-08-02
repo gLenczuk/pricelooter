@@ -10,7 +10,6 @@ import { getApplicationConfig } from '../../config';
 import { ApplicationError } from '@pricelooter/exceptions';
 import { GetCurrentUserResponse } from '@pricelooter/types';
 import { AuthenticateUserResponse } from '@pricelooter/types';
-import { getRequestLanguage } from '../../utils/getRequestLanguage';
 
 export const AUTHENTICATE_USER_ENDPOINT = '/api/v1/sessions';
 export const GET_CURRENT_SESSION_USER_ENDPOINT = '/api/v1/sessions/me';
@@ -23,13 +22,10 @@ sessionRouter.post(
     withSchemaValidation(AuthenticateUserSchema),
     withAsyncHandler(
         async (req: TypedExpressRequest<AuthenticateUserRequest>, res: ExpressResponse<AuthenticateUserResponse>) => {
-            const language = getRequestLanguage(req.headers['accept-language']);
-
             const user = await sessionController.authenticateUser({
                 body: req.body,
                 session: req.session as ExtendedExpressSession,
                 config: getApplicationConfig(),
-                language,
             });
 
             (req.session as ExtendedExpressSession).user = {
@@ -49,13 +45,10 @@ sessionRouter.get(
     GET_CURRENT_SESSION_USER_ENDPOINT,
     withSessionAuthentication,
     withAsyncHandler(async (req: ExpressRequest, res: ExpressResponse<GetCurrentUserResponse>) => {
-        const language = getRequestLanguage(req.headers['accept-language']);
-
         const user = await sessionController.getCurrentUser({
             body: {},
             session: req.session as ExtendedExpressSession,
             config: getApplicationConfig(),
-            language,
         });
 
         res.status(200).json({

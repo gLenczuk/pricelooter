@@ -1,10 +1,10 @@
 import NodeEventEmitter from 'events';
 import TypedEmitter from 'typed-emitter';
-import { Language, PlatformDTO, ProductDTO, UserDTO } from '@pricelooter/types';
+import { PlatformDTO, ProductDTO, UserDTO } from '@pricelooter/types';
 
-export type UserEvent = { user: UserDTO; language: Language };
-export type PlatformEvent = { platform: PlatformDTO; language: Language };
-export type ProductEvent = { product: ProductDTO; language: Language };
+export type UserEvent = { user: UserDTO };
+export type PlatformEvent = { platform: PlatformDTO };
+export type ProductEvent = { product: ProductDTO };
 
 type EventEmitterEvents = {
     ON_USER_CREATED: (event: UserEvent) => void | Promise<void>;

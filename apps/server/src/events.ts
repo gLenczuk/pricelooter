@@ -7,7 +7,6 @@ SyncEventEmitter.on('ON_USER_CREATED', async event => {
         await notificationService.sendAccountActivationEmail({
             userId: event.user.id,
             userEmail: event.user.email,
-            language: event.language,
         });
     } catch (error) {
         // TODO: add production error handling like Sentry for example.

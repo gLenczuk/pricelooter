@@ -1,18 +1,9 @@
 import { EmailType } from './types';
 
-export const subjectTranslations = {
-    [EmailType.USER_ACTIVATION]: {
-        pl: 'Witaj w Pricelooter!',
-        en: 'Welcome to Pricelooter!',
-    },
-    [EmailType.PASSWORD_RESET]: {
-        pl: 'Zresetuj swoje hasło.',
-        en: 'Reset your password.',
-    },
-    [EmailType.PRODUCT_PRICE_NOTIFICATION]: {
-        pl: 'Zmiana ceny produktu',
-        en: 'Product price change',
-    },
+export const subjectsPerEmailType = {
+    [EmailType.USER_ACTIVATION]: 'Welcome to Pricelooter!',
+    [EmailType.PASSWORD_RESET]: 'Reset your password.',
+    [EmailType.PRODUCT_PRICE_NOTIFICATION]: 'Product price changed',
 };
 
 export const emailTemplatesByType = {

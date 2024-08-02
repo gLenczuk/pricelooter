@@ -8,7 +8,7 @@ const sendNotification = async (req: ControllerRequest<SendNotificationRequest>)
 
     switch (type) {
         case SendNotificationType.ForgotPasswordEmail:
-            return notificationService.sendForgotPasswordRequestEmail({ email: data.email, language: req.language });
+            return notificationService.sendForgotPasswordRequestEmail({ email: data.email });
         default:
             throw new ApplicationError({ message: `Cannot handle given operation type. (${type})` });
     }

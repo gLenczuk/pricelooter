@@ -9,7 +9,6 @@ export enum NodeEnv {
 
 export * from './error';
 export * from './http';
-export * from './localization';
 
 export * from './domain/user';
 export * from './domain/session';

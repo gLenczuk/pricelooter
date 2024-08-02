@@ -7,7 +7,6 @@ import withAsyncHandler from 'express-async-handler';
 import { CreatePlatformSchema } from '@pricelooter/validator';
 import { CreatePlatformRequest, CreatePlatformResponse, GetPlatformsResponse } from '@pricelooter/types';
 import { platformController } from './platform.controller';
-import { getRequestLanguage } from '../../utils/getRequestLanguage';
 
 export const platformRouter = express.Router();
 
@@ -19,16 +18,13 @@ platformRouter.post(
     withSchemaValidation(CreatePlatformSchema),
     withAsyncHandler(
         async (req: TypedExpressRequest<CreatePlatformRequest>, res: ExpressResponse<CreatePlatformResponse>) => {
-            const language = getRequestLanguage(req.headers['accept-language']);
-
             const platform = await platformController.createPlatform({
                 body: req.body,
                 session: req.session as ExtendedExpressSession,
                 config: getApplicationConfig(),
-                language,
             });
 
-            SyncEventEmitter.emit('ON_PLATFORM_CREATED', { platform, language });
+            SyncEventEmitter.emit('ON_PLATFORM_CREATED', { platform });
 
             res.status(201).json({
                 body: { platform },

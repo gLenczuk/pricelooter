@@ -1,4 +1,4 @@
-import { EmptyObject, Language } from '@pricelooter/types';
+import { EmptyObject } from '@pricelooter/types';
 import { ApplicationConfig } from './config';
 import { Request } from 'express';
 import { Session, SessionData } from 'express-session';
@@ -7,7 +7,6 @@ export interface ControllerRequest<T = EmptyObject> {
     body: T;
     session: ServerSession;
     config: ApplicationConfig;
-    language: Language;
 }
 
 export interface TypedExpressRequest<T> extends Request {
